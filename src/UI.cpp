@@ -1,12 +1,10 @@
 #include "../headers/UI.hpp"
 
-UI::UI(){
-    if(font.loadFromFile("fonts/ArchiveUkr.ttf")){
-        fpsText.setFont(font);
+UI::UI() : fpsText(font), counterKeyText(font){
+    if(font.openFromFile("fonts/ArchiveUkr.ttf")){
         fpsText.setCharacterSize(15);
         fpsText.setFillColor(sf::Color::Blue);
 
-        counterKeyText.setFont(font);
         counterKeyText.setCharacterSize(COUNTER_KEY_TEXT_SIZE);
         counterKeyText.setFillColor(COUNTER_KEY_TEXT_COLOR);
     }
@@ -32,7 +30,7 @@ void UI::drawFrame(sf::RenderWindow& window, const float factorNearEnemy, const 
 }
 
 void UI::drawBackground(sf::RenderWindow& window){
-    ceilingObj.setPrimitiveType(sf::Quads);
+    ceilingObj.setPrimitiveType(sf::PrimitiveType::TriangleFan);
     ceilingObj.resize(4);
 
     ceilingObj[0].position = sf::Vector2f(0, 0);
@@ -49,7 +47,7 @@ void UI::drawBackground(sf::RenderWindow& window){
 
     window.draw(ceilingObj);
 
-    floorObj.setPrimitiveType(sf::Quads);
+    floorObj.setPrimitiveType(sf::PrimitiveType::TriangleFan);
     floorObj.resize(4);
     
     floorObj[0].position = sf::Vector2f(0, currentScreenHeight / 2.0f);
@@ -87,23 +85,24 @@ void UI::drawMinimap(sf::RenderWindow& window, const vector<Object2D*>& arrayObj
 
 void UI::minimapChangeView(sf::RenderWindow& window){
     oldView = window.getView();
-    minimapView.reset(sf::FloatRect(0, 0, MINIMAP_AREA_SIZE, MINIMAP_AREA_SIZE));
+    minimapView.setCenter(sf::Vector2f(MINIMAP_AREA_SIZE / 2.0f, MINIMAP_AREA_SIZE / 2.0f));
+    minimapView.setSize(sf::Vector2f(MINIMAP_AREA_SIZE, MINIMAP_AREA_SIZE));
     float vWidth = (float)MINIMAP_SIZE / window.getSize().x;
     float vHeight = (float)MINIMAP_SIZE / window.getSize().y;
-    minimapView.setViewport(sf::FloatRect(0.0f, 0.0f, vWidth, vHeight));
+    minimapView.setViewport(sf::FloatRect(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(vWidth, vHeight)));
     window.setView(minimapView);
 }
 
 void UI::minimapDrawBackground(sf::RenderWindow& window){
     minimapBack.setSize(sf::Vector2f(MINIMAP_AREA_SIZE, MINIMAP_AREA_SIZE));
-    minimapBack.setPosition(0, 0);
+    minimapBack.setPosition(sf::Vector2f(0, 0));
     minimapBack.setFillColor(MINIMAP_BACK_COLOR);
     window.draw(minimapBack);
 }
 
 void UI::minimapDrawPlayerRay(sf::RenderWindow& window, const vector<RayHit>& rayCastResult, const Object2D& player){
     Point2D playerPosition = player.getPositionCenter();
-    minimapPlayerVisibilityArea.setPrimitiveType(sf::TriangleFan);
+    minimapPlayerVisibilityArea.setPrimitiveType(sf::PrimitiveType::TriangleFan);
     minimapPlayerVisibilityArea.resize(rayCastResult.size()+1);
 
     minimapPlayerVisibilityArea[0].position = sf::Vector2f(playerPosition.getX(), playerPosition.getY());
@@ -198,7 +197,7 @@ void UI::minimapDrawVisibleObject(sf::RenderWindow& window, const vector<Object2
 
 void UI::minimapDrawOutline(sf::RenderWindow& window){
     outline.setSize(sf::Vector2f(MINIMAP_SIZE, MINIMAP_SIZE));
-    outline.setPosition(0, 0);
+    outline.setPosition(sf::Vector2f(0, 0));
     outline.setFillColor(sf::Color::Transparent);
     outline.setOutlineThickness(MINIMAP_OUTLINE_THICKNESS);
     outline.setOutlineColor(MINIMAP_OUTLINE_COLOR);
@@ -261,7 +260,7 @@ void UI::drawStrip(sf::RenderWindow& window, const RayHit& rayHit, float positio
         color = getMixingColorExpFar(color, backgroundColorFar, distance, fogDensity);
 
         strip.setSize(sf::Vector2f(width, heightStrip));
-        strip.setPosition(positionX, (currentScreenHeight - heightStrip)/2);
+        strip.setPosition(sf::Vector2f(positionX, (currentScreenHeight - heightStrip)/2));
         strip.setFillColor(color);
         window.draw(strip);
 
@@ -272,13 +271,13 @@ void UI::drawStrip(sf::RenderWindow& window, const RayHit& rayHit, float positio
 
 void UI::drawStaminaBar(sf::RenderWindow& window, float currentStamina, bool sprintIsAvailable){
     staminaBarBack.setSize(sf::Vector2f(currentScreenWidth * (STAMINA_BAR_SIZE_SHARE_X + STAMINA_BAR_BACKGROUND_SHARE_INDENT), currentScreenHeight * (STAMINA_BAR_SIZE_SHARE_Y * (maxStamina / PLAYER_MAX_STAMINA) + STAMINA_BAR_BACKGROUND_SHARE_INDENT)));
-    staminaBarBack.setPosition(currentScreenWidth * STAMINA_BAR_POSITION_SHARE_X, currentScreenHeight * STAMINA_BAR_POSITION_SHARE_Y);
+    staminaBarBack.setPosition(sf::Vector2f(currentScreenWidth * STAMINA_BAR_POSITION_SHARE_X, currentScreenHeight * STAMINA_BAR_POSITION_SHARE_Y));
     staminaBarBack.setFillColor(STAMINA_BAR_BACKGROUND_COLOR);
     window.draw(staminaBarBack);
 
     float biasPositionBar = STAMINA_BAR_SIZE_SHARE_Y * (maxStamina / PLAYER_MAX_STAMINA) * currentScreenHeight - currentScreenHeight * STAMINA_BAR_SIZE_SHARE_Y * (maxStamina / PLAYER_MAX_STAMINA) * (currentStamina / maxStamina);
     staminaBar.setSize(sf::Vector2f(currentScreenWidth * STAMINA_BAR_SIZE_SHARE_X, currentScreenHeight * STAMINA_BAR_SIZE_SHARE_Y * (maxStamina / PLAYER_MAX_STAMINA) * (currentStamina / maxStamina)));
-    staminaBar.setPosition(currentScreenWidth * (STAMINA_BAR_POSITION_SHARE_X + STAMINA_BAR_BACKGROUND_SHARE_INDENT/2), currentScreenHeight * (STAMINA_BAR_POSITION_SHARE_Y + STAMINA_BAR_BACKGROUND_SHARE_INDENT/2) + biasPositionBar);
+    staminaBar.setPosition(sf::Vector2f(currentScreenWidth * (STAMINA_BAR_POSITION_SHARE_X + STAMINA_BAR_BACKGROUND_SHARE_INDENT/2), currentScreenHeight * (STAMINA_BAR_POSITION_SHARE_Y + STAMINA_BAR_BACKGROUND_SHARE_INDENT/2) + biasPositionBar));
     if(currentStamina / maxStamina > PLAYER_PART_STAMINA_TO_SHIFT || sprintIsAvailable)
         staminaBar.setFillColor(STAMINA_BAR_COLOR);
     else
@@ -289,11 +288,11 @@ void UI::drawStaminaBar(sf::RenderWindow& window, float currentStamina, bool spr
 
 void UI::drawCounterKey(sf::RenderWindow& window, const Player& player){
     counterKeyBack.setSize(sf::Vector2f(currentScreenWidth * COUNTER_KEY_BACKGROUND_SHARE_SIZE_X, currentScreenHeight * COUNTER_KEY_BACKGROUND_SHARE_SIZE_Y));
-    counterKeyBack.setPosition(currentScreenWidth * COUNTER_KEY_BACKGROUND_SHARE_POSITION_X, currentScreenHeight * COUNTER_KEY_BACKGROUND_SHARE_POSITION_Y);
+    counterKeyBack.setPosition(sf::Vector2f(currentScreenWidth * COUNTER_KEY_BACKGROUND_SHARE_POSITION_X, currentScreenHeight * COUNTER_KEY_BACKGROUND_SHARE_POSITION_Y));
     counterKeyBack.setFillColor(COUNTER_KEY_BACKGROUND_COLOR);
     window.draw(counterKeyBack);
 
-    counterKeyText.setPosition(currentScreenWidth * COUNTER_KEY_TEXT_SHARE_POSITION_X, currentScreenHeight * COUNTER_KEY_TEXT_SHARE_POSITION_Y);
+    counterKeyText.setPosition(sf::Vector2f(currentScreenWidth * COUNTER_KEY_TEXT_SHARE_POSITION_X, currentScreenHeight * COUNTER_KEY_TEXT_SHARE_POSITION_Y));
     counterKeyText.setString("KEY: " + to_string(static_cast<int>(player.getCountCollectedKey())) + "/" + to_string(static_cast<int>(KEY_COUNT)));
     window.draw(counterKeyText);
 
@@ -432,7 +431,7 @@ void UI::drawSprite(sf::RenderWindow& window, const vector<RayHit>& rayCastResul
             float enemyStripPixelShape = pixelRight - pixelLeft;
 
             enemyStrip.setSize(sf::Vector2f(enemyStripPixelShape, spriteInfo.height));
-            enemyStrip.setPosition(pixelLeft, (currentScreenHeight - spriteInfo.height)/2);
+            enemyStrip.setPosition(sf::Vector2f(pixelLeft, (currentScreenHeight - spriteInfo.height)/2));
             enemyStrip.setFillColor(spriteInfo.color);
             window.draw(enemyStrip);
         }
@@ -443,9 +442,9 @@ void UI::drawSprite(sf::RenderWindow& window, const vector<RayHit>& rayCastResul
 sf::Color UI::getMixingColorExpNear(sf::Color color1, sf::Color color2, float factor, float density){
     float intensity = exp(-factor * density);
 
-    sf::Uint8 r = static_cast<sf::Uint8>(clamp(color1.r + round((color2.r - color1.r) * intensity), 0.0f, 255.0f));
-    sf::Uint8 g = static_cast<sf::Uint8>(clamp(color1.g + round((color2.g - color1.g) * intensity), 0.0f, 255.0f));
-    sf::Uint8 b = static_cast<sf::Uint8>(clamp(color1.b + round((color2.b - color1.b) * intensity), 0.0f, 255.0f));
+    std::uint8_t r = static_cast<std::uint8_t>(clamp(color1.r + round((color2.r - color1.r) * intensity), 0.0f, 255.0f));
+    std::uint8_t g = static_cast<std::uint8_t>(clamp(color1.g + round((color2.g - color1.g) * intensity), 0.0f, 255.0f));
+    std::uint8_t b = static_cast<std::uint8_t>(clamp(color1.b + round((color2.b - color1.b) * intensity), 0.0f, 255.0f));
 
     return sf::Color(r, g, b);
 
@@ -454,24 +453,24 @@ sf::Color UI::getMixingColorExpNear(sf::Color color1, sf::Color color2, float fa
 sf::Color UI::getMixingColorExpFar(sf::Color color1, sf::Color color2, float factor, float density){
     float intensity = 1.0f - expf(-factor * density);
 
-    sf::Uint8 r = static_cast<sf::Uint8>(clamp(color1.r * (1 - intensity) + color2.r * intensity, 0.0f, 255.0f));
-    sf::Uint8 b = static_cast<sf::Uint8>(clamp(color1.b * (1 - intensity) + color2.b * intensity, 0.0f, 255.0f));
-    sf::Uint8 g = static_cast<sf::Uint8>(clamp(color1.g * (1 - intensity) + color2.g * intensity, 0.0f, 255.0f));
+    std::uint8_t r = static_cast<std::uint8_t>(clamp(color1.r * (1 - intensity) + color2.r * intensity, 0.0f, 255.0f));
+    std::uint8_t b = static_cast<std::uint8_t>(clamp(color1.b * (1 - intensity) + color2.b * intensity, 0.0f, 255.0f));
+    std::uint8_t g = static_cast<std::uint8_t>(clamp(color1.g * (1 - intensity) + color2.g * intensity, 0.0f, 255.0f));
 
     return sf::Color(r, g, b);
 
 }
 
 sf::Color UI::getMixingColorLin(sf::Color color1, sf::Color color2){
-    sf::Uint8 r = static_cast<sf::Uint8>(clamp((color1.r + color2.r) / 2.0f, 0.0f, 255.0f));
-    sf::Uint8 b = static_cast<sf::Uint8>(clamp((color1.b + color2.b) / 2.0f, 0.0f, 255.0f));
-    sf::Uint8 g = static_cast<sf::Uint8>(clamp((color1.g + color2.g) / 2.0f, 0.0f, 255.0f));
+    std::uint8_t r = static_cast<std::uint8_t>(clamp((color1.r + color2.r) / 2.0f, 0.0f, 255.0f));
+    std::uint8_t b = static_cast<std::uint8_t>(clamp((color1.b + color2.b) / 2.0f, 0.0f, 255.0f));
+    std::uint8_t g = static_cast<std::uint8_t>(clamp((color1.g + color2.g) / 2.0f, 0.0f, 255.0f));
 
     return sf::Color(r, g, b);
 }
 
 void UI::drawFPS(sf::RenderWindow& window, float currentFPS){
-    fpsText.setPosition(currentScreenWidth - 62, 5);
+    fpsText.setPosition(sf::Vector2f(currentScreenWidth - 62, 5));
     fpsText.setString("FPS: " + std::to_string(static_cast<int>(currentFPS)));
     window.draw(fpsText);
 }

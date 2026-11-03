@@ -1,6 +1,6 @@
 TARGET   = CastOut-Engine
 CXX      = g++
-CXXFLAGS = -g -02 -Wall -Wextra -std=c++17 -I./headers -MMD
+CXXFLAGS = -g -O2 -Wall -Wextra -std=c++17 -I./headers -MMD -MP
 LDFLAGS  = -lsfml-graphics -lsfml-window -lsfml-system
 
 SRCS = $(shell find src -name '*.cpp')

@@ -59,7 +59,7 @@ void Circle::drawOnMinimap(sf::Color color, sf::RenderWindow& window) const{
     sf::CircleShape circle;
     
     circle.setRadius(radius);
-    circle.setPosition(positionAngle.getX(), positionAngle.getY());
+    circle.setPosition(sf::Vector2f(positionAngle.getX(), positionAngle.getY()));
     circle.setFillColor(color);
 
     window.draw(circle);

@@ -11,6 +11,7 @@
 #include "RayHit.hpp"
 #include "Map.hpp"
 #include "RectangleExit.hpp"
+#include <optional>
 using namespace std;
 
 class World
@@ -45,7 +46,7 @@ class World
 
     private:
         sf::RenderWindow window;
-        sf::Event event;
+        std::optional<sf::Event> event;
         sf::View view;
         sf::Clock clock;
 

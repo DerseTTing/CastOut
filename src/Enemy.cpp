@@ -30,7 +30,7 @@ void Enemy::drawOnMinimap(sf::Color color, sf::RenderWindow& window) const{
 
     float drawX = positionCenter.getX() - visualRadius;
     float drawY = positionCenter.getY() - visualRadius;
-    circle.setPosition(drawX, drawY);
+    circle.setPosition(sf::Vector2f(drawX, drawY));
 
     circle.setFillColor(color);
 

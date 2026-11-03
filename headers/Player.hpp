@@ -35,6 +35,7 @@ class Player : public Circle
 
         void drawOnMinimap(sf::Color color, sf::RenderWindow& window) const override;
 
+        void setHealth(int health);
         void setDirectionGaze(float directionGaze);
         void setSpeed(float speed);
         void setStamina(float stamina);

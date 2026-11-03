@@ -1,8 +1,8 @@
 #include "../headers/settings.hpp"
 
 // Настройки окна
-const int SCREEN_SIZE_X = 1920;
-const int SCREEN_SIZE_Y = 1080;
+const unsigned int SCREEN_SIZE_X = 1920;
+const unsigned int SCREEN_SIZE_Y = 1080;
 
 // Настройки генерации карты
 const int MAP_CELL_SIZE = 64;
@@ -141,6 +141,7 @@ const float FOV_TANGENT = tan(PLAYER_VIEWING_ANGLE * DEG_TO_RAD / 2.0f);
 // чит код
 // изменены цвета, + при ранинии
 // уменьшил карту
+// чит на бесконечное количество здоровье
 /*
 Вопросы:
 Скороcnm врага

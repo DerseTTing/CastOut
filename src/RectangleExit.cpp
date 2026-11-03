@@ -32,7 +32,7 @@ void RectangleExit::drawOnMinimap(sf::Color color, sf::RenderWindow& window) con
     }
 
     rectangle.setSize(sf::Vector2f(sizeX, sizeY));
-    rectangle.setPosition(drawX, drawY);
+    rectangle.setPosition(sf::Vector2f(drawX, drawY));
     rectangle.setFillColor(color);
     window.draw(rectangle);
 }

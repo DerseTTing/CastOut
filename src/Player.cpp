@@ -36,16 +36,16 @@ Point2D Player::createMoveVector(){
     Point2D directionVectorForward = Point2D(cos(directionGazeRadian), sin(directionGazeRadian));
     Point2D directionVectorRight = Point2D(-1 * directionVectorForward.getY(), directionVectorForward.getX());
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         moveVector = moveVector + directionVectorForward;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
         moveVector = moveVector - directionVectorForward;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
         moveVector = moveVector - directionVectorRight;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         moveVector = moveVector + directionVectorRight;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && sprintIsAvailable == true)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift) && sprintIsAvailable == true)
         speed = PLAYER_SPEED * PLAYER_SHIFT_SPEED_MULTIPLIER;
     else
         speed = PLAYER_SPEED;
@@ -58,7 +58,7 @@ Point2D Player::createMoveVector(){
 }
 
 void Player::updateStamina(float deltaTime){
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && sprintIsAvailable == true)
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift) && sprintIsAvailable == true)
         stamina -= PLAYER_DEGENERATION_STAMINA * deltaTime;
     else if(stamina < staminaMax)
         stamina += PLAYER_REGENERATION_STAMINA * deltaTime;
@@ -85,7 +85,7 @@ void Player::drawOnMinimap(sf::Color color, sf::RenderWindow& window) const{
 
     float drawX = positionCenter.getX() - visualRadius;
     float drawY = positionCenter.getY() - visualRadius;
-    circle.setPosition(drawX, drawY);
+    circle.setPosition(sf::Vector2f(drawX, drawY));
 
     circle.setFillColor(color);
 
@@ -113,7 +113,8 @@ void Player::updateRotation(float mouseDelta, float deltaTime){
 
         if(currentTimeScreamToEnemy <= 0){
             health -= 1;
-            stamina = staminaMax * PLAYER_MAX_STAMINA_PART_AFTER_HIT;
+            if(health <= PLAYER_HEALTH)
+                stamina = staminaMax * PLAYER_MAX_STAMINA_PART_AFTER_HIT;
             if(health > 0)
                 staminaMax = staminaMax * PLAYER_MAX_STAMINA_PART_AFTER_HIT;
             
@@ -138,6 +139,10 @@ void Player::startRotationToEnemy(const Point2D& positionEnemy){
     targetDirectionGazeToEnemy = getDirectionGaze() + angleRotationToEnemy;
     angleStepRotationToEnemy = angleRotationToEnemy / PLAYER_TIME_ROTATION_TO_ENEMY;
 
+}
+
+void Player::setHealth(int health){
+    this->health = health;
 }
 
 void Player::setDirectionGaze(float directionGaze){

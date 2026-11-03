@@ -10,8 +10,8 @@ inline constexpr float MAX_FLOAT = 3.4028235e38f;
 inline constexpr float LITLE_FLOAT = 1e-9f;
 
 // Настройки окна
-extern const int SCREEN_SIZE_X;
-extern const int SCREEN_SIZE_Y;
+extern const unsigned int SCREEN_SIZE_X;
+extern const unsigned int SCREEN_SIZE_Y;
 
 // Настройки генерации карты
 inline constexpr int MAP_SIZE_X = 55; //70

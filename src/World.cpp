@@ -1,7 +1,7 @@
 #include "../headers/World.hpp"
 
 World::World()
-    : window(sf::VideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y), "CastOut"){
+    : window(sf::VideoMode({SCREEN_SIZE_X, SCREEN_SIZE_Y}), "CastOut"){ 
     view = window.getDefaultView();
 
     resizedEvent();
@@ -20,7 +20,7 @@ World::~World() {
 
 void World::runWorld(){
     while(window.isOpen()){
-        while (window.pollEvent(event)){
+        while ((event = window.pollEvent())){ 
             processingEvent();
         }
 
@@ -100,35 +100,41 @@ void World::generationMap(){
 }
 
 void World::processingEvent(){
-    if (event.type == sf::Event::Closed)
+    const auto* keyPressed = event->getIf<sf::Event::KeyPressed>(); 
+
+    if (event->is<sf::Event::Closed>())
         window.close();
-    else if (event.type == sf::Event::Resized)
+    else if (event->is<sf::Event::Resized>())
         resizedEvent();
-    else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R)
+    else if(keyPressed && keyPressed->code == sf::Keyboard::Key::R) 
         restartWorld();
-    else if((event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Numpad7) || event.type == sf::Event::LostFocus) && !finishGame)
+    else if(((keyPressed && (keyPressed->code == sf::Keyboard::Key::Escape || keyPressed->code == sf::Keyboard::Key::Numpad7)) || event->is<sf::Event::FocusLost>()) && !finishGame) 
         pauseWorld();
-    else if((event.type == sf::Event::MouseButtonPressed) && !finishGame)
+    else if(event->is<sf::Event::MouseButtonPressed>() && !finishGame) 
         resumeWorld();
-    else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::V && showHiddenObjectsOnMinimap)
+    else if(keyPressed && keyPressed->code == sf::Keyboard::Key::V && showHiddenObjectsOnMinimap) 
         showHiddenObjectsOnMinimap = false;
-    else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::V && !showHiddenObjectsOnMinimap)
+    else if(keyPressed && keyPressed->code == sf::Keyboard::Key::V && !showHiddenObjectsOnMinimap) 
         showHiddenObjectsOnMinimap = true;
-    else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M && areaVisionMinimap)
+    else if(keyPressed && keyPressed->code == sf::Keyboard::Key::M && areaVisionMinimap) 
         areaVisionMinimap = false;
-    else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M && !areaVisionMinimap)
+    else if(keyPressed && keyPressed->code == sf::Keyboard::Key::M && !areaVisionMinimap) 
         areaVisionMinimap = true;
-    else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::K && userInterface.getIsHiddenInterface())
+    else if(keyPressed && keyPressed->code == sf::Keyboard::Key::K && userInterface.getIsHiddenInterface()) 
         userInterface.showInterface();
-    else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::K && !userInterface.getIsHiddenInterface())
+    else if(keyPressed && keyPressed->code == sf::Keyboard::Key::K && !userInterface.getIsHiddenInterface()) 
         userInterface.hideInterface();
+    else if(keyPressed && keyPressed->code == sf::Keyboard::Key::H){
+        cout << "Читкод H: " << player->getHealth() << "\n";
+        player->setHealth(10000);
+    }
 
 }
 
 void World::resizedEvent(){
-    currentScreenWidth = event.size.width;
-    currentScreenHeight = event.size.height;
-    view = sf::View(sf::FloatRect(0, 0, currentScreenWidth, currentScreenHeight));
+    currentScreenWidth = window.getSize().x; 
+    currentScreenHeight = window.getSize().y; 
+    view = sf::View(sf::FloatRect({0.f, 0.f}, {static_cast<float>(currentScreenWidth), static_cast<float>(currentScreenHeight)})); 
     window.setView(view);
     
 
@@ -303,7 +309,8 @@ void World::cheakCatchPlayer(){
     else if(enemy->getDealsDamage() && !player->getIsCatchToEnemy()){
         enemy->teleportToFarWalkableCell(player->getPositionCenter());
         wasRotationToEnemyLastFrame = false;
-        userInterface.registerHit(player->getHealth());
+        if(player->getHealth() <= PLAYER_HEALTH)
+            userInterface.registerHit(player->getHealth());
         userInterface.showInterface();
     }
 }

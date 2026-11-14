@@ -1,8 +1,6 @@
 .vscode/
 *.code-workspace
 
-CastOut-Engine
-
 build/
 bin/
 *.log
@@ -14,6 +12,7 @@ bin/
 *.a
 *.so
 *.dll
-*.dylibobj/
+*.dylib
+obj/
 CastOut-Engine
 *.d

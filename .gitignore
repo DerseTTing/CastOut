@@ -14,4 +14,6 @@ bin/
 *.a
 *.so
 *.dll
-*.dylib
+*.dylibobj/
+CastOut-Engine
+*.d

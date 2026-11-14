@@ -13,5 +13,5 @@ class Key : public Circle{
 
         void drawOnMinimap(sf::Color color, sf::RenderWindow& window) const override;
 
-        void updateObject(const vector<Object2D*>& arrayObjects, float deltaTime) override;
+        void updateObject(const vector<Object2D*>& arrayObjects, float) override;
 };

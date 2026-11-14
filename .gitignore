@@ -1,6 +1,8 @@
 .vscode/
 *.code-workspace
 
+CastOut-Engine
+
 build/
 bin/
 *.log

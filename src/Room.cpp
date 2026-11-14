@@ -19,13 +19,15 @@ void Room::fullLittleRoom(Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]){
     }
 }
 
-void Room::fullMidleRoom(Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]){
-    float droppedChance = Random::getRandomNumber(0.0f, 1.0f);
+
+void Room::fullMidleRoom(Cell (&/*map*/)[MAP_SIZE_Y][MAP_SIZE_X]){
+    
 }
 
-void Room::fullHightRoom(Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]){
-    float droppedChance = Random::getRandomNumber(0.0f, 1.0f);
+void Room::fullHightRoom(Cell (&/*map*/)[MAP_SIZE_Y][MAP_SIZE_X]){
+    
 }
+
 
 void Room::room_CentralCircle(float minSizeCentralCircleOfPartRoom, float maxSizeCentralCircleOfPartRoom, Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]){
     int minPassage = 2;
@@ -38,10 +40,6 @@ void Room::room_CentralCircle(float minSizeCentralCircleOfPartRoom, float maxSiz
     int sizeCircle = floor(Random::getRandomNumber(minSizeCentralCircleOfPartRoom, maxSizeCentralCircleOfPartRoom + 0.00001f) * sizeRoom);
 
     generationCircleInRoom(localePositionCircle, sizeCircle, map);
-}
-
-void Room::room_CentralRectangle(int sizeRectangle, Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]){
-
 }
 
 Point2D Room::conversionPartToLocalPosition(Point2D partPosition){
@@ -95,6 +93,7 @@ void Room::generationRectangleInRoom(Point2D localePositionAngleRectangle, int s
         }
     }
 }
+
 
 void Room::setPositionAngle(const Point2D& positionAngle){
     this->positionAngle = positionAngle;

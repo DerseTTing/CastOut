@@ -19,16 +19,16 @@ void Key::drawOnMinimap(sf::Color color, sf::RenderWindow& window) const{
     float drawY = positionCenter.getY() - visualRadius;
     circle.setPosition(sf::Vector2f(drawX, drawY));
 
-    circle.setFillColor(this->color);
+    circle.setFillColor(color);
 
     window.draw(circle);
 }
 
-void Key::updateObject(const vector<Object2D*>& arrayObjects, float deltaTime){
-    Player* player;
+void Key::updateObject(const vector<Object2D*>& arrayObjects, float){
+    Player* player = nullptr;
     Enemy* enemy = nullptr;
 
-    for(int i = 0; i < arrayObjects.size();i++){
+    for(int i = 0; i < (int)arrayObjects.size();i++){
         if(arrayObjects[i]->getObjectType() == ObjectType::Player)
             player = static_cast<Player*>(arrayObjects[i]);
         else if(arrayObjects[i]->getObjectType() == ObjectType::Enemy)

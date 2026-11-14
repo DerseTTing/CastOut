@@ -22,7 +22,7 @@ class Enemy : public Circle
         void foundNewRandomTarget();
 
         bool enemySeePlayer(const vector<Object2D*>& arrayObjects) const;
-        void foundChaseTarget(const vector<Object2D*>& arrayObjects);
+        void foundChaseTarget();
 
         Point2D lastPlayerPosition;
 

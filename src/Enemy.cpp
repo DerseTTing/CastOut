@@ -11,7 +11,7 @@ Enemy::~Enemy(){
 
 void Enemy::updateObject(const vector<Object2D*>& arrayObjects, float deltaTime){
     if(enemySeePlayer(arrayObjects))
-        foundChaseTarget(arrayObjects);
+        foundChaseTarget();
     else if(listStepToTarget.size() == 0)
         foundNewRandomTarget();
 
@@ -74,7 +74,7 @@ bool Enemy::enemySeePlayer(const vector<Object2D*>& arrayObjects) const{
     float minDistance = MAX_FLOAT;
     Object2D* closestObject = nullptr;
 
-    for(int i = 0; i < arrayObjects.size();i++){
+    for(int i = 0; i < (int)arrayObjects.size();i++){
         if(arrayObjects[i]->getObjectType() != ObjectType::Enemy){
             float dist = arrayObjects[i]->intersectRay(startPoint, directionVector);
             if(minDistance > dist && dist != -1.0f){
@@ -91,7 +91,7 @@ bool Enemy::enemySeePlayer(const vector<Object2D*>& arrayObjects) const{
 
 }
 
-void Enemy::foundChaseTarget(const vector<Object2D*>& arrayObjects){
+void Enemy::foundChaseTarget(){
     speed = ENEMY_SPEED_CHASE;
     enemyInChase = true;
     enemyInCarefullyMode = false;

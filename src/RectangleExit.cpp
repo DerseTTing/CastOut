@@ -37,10 +37,10 @@ void RectangleExit::drawOnMinimap(sf::Color color, sf::RenderWindow& window) con
     window.draw(rectangle);
 }
 
-void RectangleExit::updateObject(const vector<Object2D*>& arrayObjects, float deltaTime){
-    Player* player;
+void RectangleExit::updateObject(const vector<Object2D*>& arrayObjects, float){
+    Player* player = nullptr;
 
-    for(int i = 0; i < arrayObjects.size();i++){
+    for(int i = 0; i < (int)arrayObjects.size();i++){
         if(arrayObjects[i]->getObjectType() == ObjectType::Player)
             player = static_cast<Player*>(arrayObjects[i]);
     }

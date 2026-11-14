@@ -15,8 +15,8 @@ extern const unsigned int SCREEN_SIZE_X;
 extern const unsigned int SCREEN_SIZE_Y;
 
 // Настройки генерации карты
-inline constexpr int MAP_SIZE_X = 55; //70
-inline constexpr int MAP_SIZE_Y = 55;
+inline constexpr int MAP_SIZE_X = 60; 
+inline constexpr int MAP_SIZE_Y = 60;
 extern const int MAP_CELL_SIZE;
 extern const int MAP_NUMBER_ROOM_DIVISIONS;
 extern const float MAP_ROOM_DIVISIONS_SKIP_PERCENT;
@@ -129,6 +129,19 @@ extern const float STAMINA_BAR_POSITION_SHARE_Y;
 extern const sf::Color STAMINA_BAR_BACKGROUND_COLOR;
 extern const sf::Color STAMINA_BAR_COLOR;
 extern const sf::Color STAMINA_BAR_COLOR_DEFICIENCY;
+
+//Настройки подсказки выхода
+extern const float EXIT_HELPER_RECTANGLE_SIZE_SHARE_X;
+extern const float EXIT_HELPER_RECTANGLE_SIZE_SHARE_Y;
+extern const float EXIT_HELPER_RECTANGLE_POSITION_SHARE_X;
+extern const float EXIT_HELPER_RECTANGLE_POSITION_SHARE_Y;
+
+extern const float EXIT_HELPER_RECTANGLE_CIRCLE_INDENT_SHARE;
+extern const sf::Color EXIT_HELPER_COLOR;
+
+extern const float EXIT_HELPER_CIRCLE_RADIUS_SHARE_X;
+extern const float EXIT_HELPER_CIRCLE_POSITION_SHARE_X;
+extern const float EXIT_HELPER_CIRCLE_POSITION_SHARE_Y;
 
 // Вычисляемые параметры
 extern const float FOV_TANGENT;

@@ -38,7 +38,7 @@ class World
 
         void resetMouseDelta();
 
-        void castRay(Point2D startPointRay, float directionGaze);
+        void castRay();
 
         void updateFPS();
 

@@ -38,7 +38,7 @@ void Map::generationRooms(){
     roomsBuffer1.push_back(firstRoom);
 
     for(int i = 0; i < MAP_NUMBER_ROOM_DIVISIONS; i++){
-        for(int j = 0; j < pointerRoomShare->size(); j++){
+        for(int j = 0; j < (int)pointerRoomShare->size(); j++){
             if(Random::getRandomNumber(0.0f, 1.0f) < MAP_ROOM_DIVISIONS_SKIP_PERCENT && i + 1 >= MAP_ROOM_DIVISIONS_SKIP_START){
                 pointerRoomSave->push_back((*pointerRoomShare)[j]);
             }
@@ -176,7 +176,7 @@ vector<int> Map::getDoorPlaces(int lengthWall){
 }
 
 void Map::fullRooms(){
-    for(int i = 0; i < rooms.size(); i++){
+    for(int i = 0; i < (int)rooms.size(); i++){
         rooms[i].fullRoom(map);
     }
 }
@@ -234,7 +234,6 @@ void Map::generationExit(){
 }
 
 void Map::generationPlayer(){
-    int k = 10000;
     vector<Point2D> cellForPlayer;
 
     for(int yCell = 0; yCell < MAP_SIZE_Y; yCell++){
@@ -292,7 +291,7 @@ void Map::generationKey(){
         }
     }
 
-    while(addedKeys.size() != KEY_COUNT && cellForKey.size() + cellForKeyReserve.size() > 0){
+    while((int)addedKeys.size() != KEY_COUNT && (int)(cellForKey.size() + cellForKeyReserve.size()) > 0){
         
         if(addedKeys.size() != 0){
             for(int idCell = cellForKey.size() - 1; idCell >= 0; idCell--){
@@ -314,7 +313,7 @@ void Map::generationKey(){
 
             cellForKey.erase(cellForKey.begin() + idCell);
 
-            for(int i = 0; i < cellForKeyReserve.size(); i++){
+            for(int i = 0; i < (int)cellForKeyReserve.size(); i++){
                 if(cellForKeyReserve[i] == selectCellForKey)
                     cellForKeyReserve.erase(cellForKeyReserve.begin() + i);
             }

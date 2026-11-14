@@ -13,7 +13,7 @@ World::World()
 }
 
 World::~World() {
-    for (int i = 0; i < arrayObjects.size(); i++) {
+    for (int i = 0; i < (int)arrayObjects.size(); i++) {
         delete arrayObjects[i];
     }
 }
@@ -29,7 +29,7 @@ void World::runWorld(){
 
             updateObjects();
 
-            castRay(player->getPositionCenter(), player->getDirectionGaze());
+            castRay();
 
             updateFPS();
 
@@ -39,7 +39,7 @@ void World::runWorld(){
 }
 
 void World::restartWorld(){
-    for (int i = 0; i < arrayObjects.size(); i++) {
+    for (int i = 0; i < (int)arrayObjects.size(); i++) {
             delete arrayObjects[i];
     }
     arrayObjects.clear();
@@ -85,7 +85,7 @@ void World::stopWorld(){
 void World::generationMap(){
     arrayObjects = mapObj.generationMap();
 
-    for(int i = 0; i < arrayObjects.size(); i++){
+    for(int i = 0; i < (int)arrayObjects.size(); i++){
         if(arrayObjects[i]->getObjectType() == ObjectType::Player)
             player = static_cast<Player*>(arrayObjects[i]);
         if(arrayObjects[i]->getObjectType() == ObjectType::Enemy){
@@ -147,9 +147,10 @@ void World::resizedEvent(){
 void World::drawFrame(){
     window.clear();
 
+    userInterface.setEnemyInfo((player->getPositionCenter() - enemy->getPositionCenter()).getLenghtVector() - ENEMY_RADIUS, enemy->getEnemyInChase(), enemy->getEnemyInCarefullyMode());
 
-    userInterface.drawFrame(window, (player->getPositionCenter() - enemy->getPositionCenter()).getLenghtVector() - ENEMY_RADIUS, enemy->getEnemyInChase(), enemy->getEnemyInCarefullyMode(), rayCastResult, 
-    findEdges, arrayObjects, *player, mapObj.getMap(), showHiddenObjectsOnMinimap, areaVisionMinimap, player->getStamina(), player->getSprintIsAvailable(), currentFPS);
+    userInterface.drawFrame(window, rayCastResult, findEdges, arrayObjects, *player, mapObj.getMap(), showHiddenObjectsOnMinimap, areaVisionMinimap, 
+        player->getStamina(), player->getSprintIsAvailable(), currentFPS);
 
 
     window.display();
@@ -160,7 +161,7 @@ void World::updateObjects(){
     resetMouseDelta();
     player->setMouseDelta(mouseDelta);
 
-    for(int i = 0; i < arrayObjects.size(); i++){
+    for(int i = 0; i < (int)arrayObjects.size(); i++){
         arrayObjects[i]->updateObject(arrayObjects, deltaTime);
     }
 
@@ -175,7 +176,7 @@ void World::updateObjects(){
 }
 
 void World::checkDeleteObject(){
-    for(int i = arrayObjects.size() - 1; i >= 0; i--){
+    for(int i = (int)arrayObjects.size() - 1; i >= 0; i--){
         if(arrayObjects[i]->getMarkedForDeletion()){
             delete(arrayObjects[i]);
             arrayObjects.erase(arrayObjects.begin() + i);
@@ -202,7 +203,7 @@ void World::resetMouseDelta(){
         mouseDelta = 0.0f;   
 }
 
-void World::castRay(Point2D startPointRay, float directionGaze){
+void World::castRay(){
     rayCastResult.clear();
 
     for(int k = 0; k < countRays; k++){
@@ -211,6 +212,7 @@ void World::castRay(Point2D startPointRay, float directionGaze){
         float relativeAngle = atanf(screenX * FOV_TANGENT) * RAD_TO_DEG;
         float currentAngle = player->getDirectionGaze() + relativeAngle;
 
+        Point2D startPointRay = player->getPositionCenter();
         Point2D directionVector(cos(currentAngle * DEG_TO_RAD), sin(currentAngle * DEG_TO_RAD));
         
         RayHit hit = findClosestIntersection(startPointRay, currentAngle, directionVector);
@@ -223,12 +225,11 @@ void World::castRay(Point2D startPointRay, float directionGaze){
 void World::searchEdges(){
     findEdges.clear();
 
-    for(int i = 0; i < rayCastResult.size() - 1; i++){
+    for(int i = 0; i < (int)rayCastResult.size() - 1; i++){
         if(rayCastResult[i].hit && rayCastResult[i + 1].hit && rayCastResult[i].closestObject != rayCastResult[i+1].closestObject){
             float angleLeft  = rayCastResult[i].angle;
             float angleRight = rayCastResult[i+1].angle;
             Object2D* objLeft = rayCastResult[i].closestObject;
-            Object2D* objRight = rayCastResult[i+1].closestObject;
 
             RayHit hitAtLeftAngle = rayCastResult[i];
             RayHit hitAtRightAngle = rayCastResult[i+1];
@@ -265,7 +266,7 @@ RayHit World::findClosestIntersection(Point2D startPoint, float currentAngle, Po
     float minDistance = MAX_FLOAT;
     Object2D* closestObject = nullptr;
 
-    for(int i = 0; i < arrayObjects.size();i++){
+    for(int i = 0; i < (int)arrayObjects.size();i++){
             if(ObjectTypeRules::isRayCastingTypeObject(arrayObjects[i]->getObjectType())){
                 float dist = arrayObjects[i]->intersectRay(startPoint, directionVector);
                 if(minDistance > dist && dist != -1.0f){

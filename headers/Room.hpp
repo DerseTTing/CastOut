@@ -13,20 +13,21 @@ class Room{
         int width;
         int length;
 
-    public:
-        void fullRoom(Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]);
-
         void fullLittleRoom(Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]);
         void fullMidleRoom(Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]);
         void fullHightRoom(Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]);
-        
-        void room_CentralCircle(float minSizeCentralCircleOfPartRoom, float maxSizeCentralCircleOfPartRoom, Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]);
-        void room_CentralRectangle(int sizeRectangle, Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]);
 
-        Point2D conversionPartToLocalPosition(Point2D partPosition);
+        void room_CentralCircle(float minSizeCentralCircleOfPartRoom, float maxSizeCentralCircleOfPartRoom, Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]);
 
         void generationCircleInRoom(Point2D localePositionCenterCircle, int size, Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]);
         void generationRectangleInRoom(Point2D localePositionAngleRectangle, int size, Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]);
+        
+    public:
+        void fullRoom(Cell (&map)[MAP_SIZE_Y][MAP_SIZE_X]);
+        
+
+        Point2D conversionPartToLocalPosition(Point2D partPosition);
+
 
         void setPositionAngle(const Point2D& positionAngle);
         void setWidth(int width);

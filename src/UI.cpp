@@ -13,11 +13,9 @@ UI::UI() : fpsText(font), counterKeyText(font){
     circleForMinimap = new Circle(Point2D(1, 1), 1, 1, wallColor, ObjectType::None);
 }
 
-void UI::drawFrame(sf::RenderWindow& window, const float factorNearEnemy, const bool enemyInChase, const bool enemyInCarefullyMode, const vector<RayHit>& rayCastResult, 
-    const vector<EdgeHit>& findEdges, const vector<Object2D*>& arrayObjects, const Player& player, const Cell (*map)[MAP_SIZE_X], bool showHiddenObjectsOnMinimap, 
-    bool areaVisionMinimap, float currentStamina, bool sprintIsAvailable, float currentFPS){
+void UI::drawFrame(sf::RenderWindow& window, const vector<RayHit>& rayCastResult, const vector<EdgeHit>& findEdges, const vector<Object2D*>& arrayObjects, 
+    const Player& player, const Cell (*map)[MAP_SIZE_X], bool showHiddenObjectsOnMinimap, bool areaVisionMinimap, float currentStamina, bool sprintIsAvailable, float currentFPS){
 
-    setEnemyInfo(factorNearEnemy, enemyInChase, enemyInCarefullyMode);
     drawBackground(window);
     drawRayCastResult(window, rayCastResult, findEdges);
     drawAllSprites(window, arrayObjects, rayCastResult);
@@ -26,7 +24,11 @@ void UI::drawFrame(sf::RenderWindow& window, const float factorNearEnemy, const 
         drawStaminaBar(window, currentStamina, sprintIsAvailable);
         drawCounterKey(window, player);
         drawFPS(window, currentFPS);
+
+        if(isExitNearPlayer(arrayObjects, player))
+            drawExitHelper(window);
     }
+    
 }
 
 void UI::drawBackground(sf::RenderWindow& window){
@@ -103,12 +105,12 @@ void UI::minimapDrawBackground(sf::RenderWindow& window){
 void UI::minimapDrawPlayerRay(sf::RenderWindow& window, const vector<RayHit>& rayCastResult, const Object2D& player){
     Point2D playerPosition = player.getPositionCenter();
     minimapPlayerVisibilityArea.setPrimitiveType(sf::PrimitiveType::TriangleFan);
-    minimapPlayerVisibilityArea.resize(rayCastResult.size()+1);
+    minimapPlayerVisibilityArea.resize((int)rayCastResult.size() + 1);
 
     minimapPlayerVisibilityArea[0].position = sf::Vector2f(playerPosition.getX(), playerPosition.getY());
     minimapPlayerVisibilityArea[0].color = MINIMAP_RAY_PLAYER_COLOR;
 
-    for(int i = 0; i < rayCastResult.size(); i++){
+    for(int i = 0; i < (int)rayCastResult.size(); i++){
         float posX = playerPosition.getX() + rayCastResult[i].distanceWithoutCorrection * cos(rayCastResult[i].angle * DEG_TO_RAD);
         float posY = playerPosition.getY() + rayCastResult[i].distanceWithoutCorrection * sin(rayCastResult[i].angle * DEG_TO_RAD);
 
@@ -123,7 +125,7 @@ void UI::minimapDrawAllObject(sf::RenderWindow& window, const vector<Object2D*>&
     sf::Color objectColor;
     Object2D* exitObj = nullptr;
 
-    for(int i = 0; i < arrayObjects.size(); i++){
+    for(int i = 0; i < (int)arrayObjects.size(); i++){
         ObjectType type = arrayObjects[i]->getObjectType();
 
         if(type == ObjectType::RectangleExit){
@@ -137,6 +139,7 @@ void UI::minimapDrawAllObject(sf::RenderWindow& window, const vector<Object2D*>&
         switch(type){
             case ObjectType::Player: objectColor = PLAYER_COLOR; break;
             case ObjectType::Enemy: objectColor = ENEMY_COLOR; break;
+            case ObjectType::Key: objectColor = KEY_COLOR; break;
             default: objectColor = MINIMAP_WALL_COLOR; break;
         }
 
@@ -176,12 +179,9 @@ void UI::minimapDrawVisibleObject(sf::RenderWindow& window, const vector<Object2
         }
     }
 
-    for(int i = 0; i < arrayObjects.size(); i++){
+    for(int i = 0; i < (int)arrayObjects.size(); i++){
         if(arrayObjects[i]->getObjectType() == ObjectType::RectangleExit){
-            Point2D exitCell = Point2D(floor(arrayObjects[i]->getPositionCenter().getX() / MAP_CELL_SIZE),
-                                        floor(arrayObjects[i]->getPositionCenter().getY() / MAP_CELL_SIZE));
-
-            if((playerPosition - exitCell).getLenghtVector() < MINIMAP_BOUNDED_REGION_CELL)
+            if(isExitNearPlayer(arrayObjects, player))
                 arrayObjects[i]->drawOnMinimap(MINIMAP_RECTANGLE_EXIT_COLOR, window);
             else
                 arrayObjects[i]->drawOnMinimap(MINIMAP_WALL_COLOR, window);
@@ -209,12 +209,10 @@ void UI::drawRayCastResult(sf::RenderWindow& window, const vector<RayHit>& rayCa
     int indexEngeRay = 0;
 
     RayHit rayHit;
-    float positionX;
-    float width;
 
-    for(int i = 0; i < rayCastResult.size(); i++){
-        if(i != rayCastResult.size() - 1){
-            if(findEdges.size() > indexEngeRay && i == findEdges[indexEngeRay].leftRayIndex){
+    for(int i = 0; i < (int)rayCastResult.size(); i++){
+        if(i != (int)rayCastResult.size() - 1){
+            if((int)findEdges.size() > indexEngeRay && i == findEdges[indexEngeRay].leftRayIndex){
                 const EdgeHit& edge = findEdges[indexEngeRay];
 
                 float edgeX = std::max(i * stepStripX, std::min(edge.positionScreenX, (i + 1) * stepStripX));
@@ -286,6 +284,19 @@ void UI::drawStaminaBar(sf::RenderWindow& window, float currentStamina, bool spr
 
 }
 
+void UI::drawExitHelper(sf::RenderWindow& window){
+    exitHelperRectangle.setSize(sf::Vector2f(currentScreenWidth * EXIT_HELPER_RECTANGLE_SIZE_SHARE_X, currentScreenHeight * EXIT_HELPER_RECTANGLE_SIZE_SHARE_Y));
+    exitHelperRectangle.setPosition(sf::Vector2f(currentScreenWidth * EXIT_HELPER_RECTANGLE_POSITION_SHARE_X, currentScreenHeight * EXIT_HELPER_RECTANGLE_POSITION_SHARE_Y));
+    exitHelperRectangle.setFillColor(EXIT_HELPER_COLOR);
+    window.draw(exitHelperRectangle);
+
+    exitHelperCircle.setRadius(currentScreenWidth * EXIT_HELPER_CIRCLE_RADIUS_SHARE_X);
+    exitHelperCircle.setPosition(sf::Vector2f(currentScreenWidth * EXIT_HELPER_CIRCLE_POSITION_SHARE_X, currentScreenHeight * EXIT_HELPER_CIRCLE_POSITION_SHARE_Y));
+    exitHelperCircle.setFillColor(EXIT_HELPER_COLOR);
+    exitHelperCircle.setPointCount(60);
+    window.draw(exitHelperCircle);
+}
+
 void UI::drawCounterKey(sf::RenderWindow& window, const Player& player){
     counterKeyBack.setSize(sf::Vector2f(currentScreenWidth * COUNTER_KEY_BACKGROUND_SHARE_SIZE_X, currentScreenHeight * COUNTER_KEY_BACKGROUND_SHARE_SIZE_Y));
     counterKeyBack.setPosition(sf::Vector2f(currentScreenWidth * COUNTER_KEY_BACKGROUND_SHARE_POSITION_X, currentScreenHeight * COUNTER_KEY_BACKGROUND_SHARE_POSITION_Y));
@@ -300,30 +311,30 @@ void UI::drawCounterKey(sf::RenderWindow& window, const Player& player){
 
 void UI::drawAllSprites(sf::RenderWindow& window, const vector<Object2D*>& arrayObjects, const vector<RayHit>& rayCastResult){
     vector<BillboardSprite> spritesToDraw;
-    Player* player;
-    for(int idObj = 0; idObj < arrayObjects.size(); idObj++){
+    Player* player = nullptr;
+    for(int idObj = 0; idObj < (int)arrayObjects.size(); idObj++){
         if(arrayObjects[idObj]->getObjectType() == ObjectType::Player)
             player = static_cast<Player*>(arrayObjects[idObj]);
     }
 
-    for(int idObj = 0; idObj < arrayObjects.size(); idObj++){
+    for(int idObj = 0; idObj < (int)arrayObjects.size(); idObj++){
         if(arrayObjects[idObj]->getObjectType() == ObjectType::Enemy){
-            BillboardSprite sprite = createEnemySprite(window, *static_cast<Enemy*>(arrayObjects[idObj]), *player, rayCastResult);
+            BillboardSprite sprite = createEnemySprite(*static_cast<Enemy*>(arrayObjects[idObj]), *player);
             if(sprite.visible)
                 spritesToDraw.push_back(sprite);
         }
         else if(arrayObjects[idObj]->getObjectType() == ObjectType::Key){
-            BillboardSprite sprite = createKeySprite(window, *static_cast<Key*>(arrayObjects[idObj]), *player, rayCastResult);
+            BillboardSprite sprite = createKeySprite(*static_cast<Key*>(arrayObjects[idObj]), *player);
             if(sprite.visible)
                 spritesToDraw.push_back(sprite);
         }
     }
 
-    while(spritesToDraw.size() > 0){
+    while((int)spritesToDraw.size() > 0){
         float maxDistance = -1;
         int maxDistanceIdSprite = 0;
-        BillboardSprite* maxDistanceSprite;
-        for(int idSprite = 0; idSprite < spritesToDraw.size(); idSprite++){
+        BillboardSprite* maxDistanceSprite = nullptr;
+        for(int idSprite = 0; idSprite < (int)spritesToDraw.size(); idSprite++){
             if(spritesToDraw[idSprite].distance > maxDistance){
                 maxDistance = spritesToDraw[idSprite].distance;
                 maxDistanceIdSprite = idSprite;
@@ -337,7 +348,7 @@ void UI::drawAllSprites(sf::RenderWindow& window, const vector<Object2D*>& array
     }
 }
 
-UI::BillboardSprite UI::createEnemySprite(sf::RenderWindow& window, const Enemy& enemy, const Player& player, const vector<RayHit>& rayCastResult){
+UI::BillboardSprite UI::createEnemySprite(const Enemy& enemy, const Player& player){
     Point2D positionEnemy = enemy.getPositionCenter();
     Point2D positionPlayer = player.getPositionCenter();
     Point2D vectorPlayerToEnemy = Point2D(positionEnemy.getX() - positionPlayer.getX(), positionEnemy.getY() - positionPlayer.getY());
@@ -380,7 +391,7 @@ UI::BillboardSprite UI::createEnemySprite(sf::RenderWindow& window, const Enemy&
     return spriteEnemy;
 }
 
-UI::BillboardSprite UI::createKeySprite(sf::RenderWindow& window, const Key& key, const Player& player, const vector<RayHit>& rayCastResult){
+UI::BillboardSprite UI::createKeySprite(const Key& key, const Player& player){
     Point2D positionKey = key.getPositionCenter();
     Point2D positionPlayer = player.getPositionCenter();
     Point2D vectorPlayerToKey = Point2D(positionKey.getX() - positionPlayer.getX(), positionKey.getY() - positionPlayer.getY());
@@ -424,7 +435,7 @@ UI::BillboardSprite UI::createKeySprite(sf::RenderWindow& window, const Key& key
 }
 
 void UI::drawSprite(sf::RenderWindow& window, const vector<RayHit>& rayCastResult, const BillboardSprite& spriteInfo){
-    for(int i = 0; i < rayCastResult.size(); i++){
+    for(int i = 0; i < (int)rayCastResult.size(); i++){
         if(i >= floor(spriteInfo.leftSide) && i < ceil(spriteInfo.rightSide) && rayCastResult[i].distanceWithoutCorrection > spriteInfo.distance){
             float pixelLeft  = max((float)i, spriteInfo.leftSide) * stepStripX;
             float pixelRight = min((float)i + 1,spriteInfo.rightSide) * stepStripX;
@@ -467,6 +478,17 @@ sf::Color UI::getMixingColorLin(sf::Color color1, sf::Color color2){
     std::uint8_t g = static_cast<std::uint8_t>(clamp((color1.g + color2.g) / 2.0f, 0.0f, 255.0f));
 
     return sf::Color(r, g, b);
+}
+
+bool UI::isExitNearPlayer(const vector<Object2D*>& arrayObjects, const Object2D& player) const{
+    Point2D playerPosCell = Point2D(floor(player.getPositionCenter().getX() / MAP_CELL_SIZE), floor(player.getPositionCenter().getY() / MAP_CELL_SIZE));
+    for(int i = 0; i < (int)arrayObjects.size(); i++){
+        if(arrayObjects[i]->getObjectType() == ObjectType::RectangleExit){
+            Point2D exitPosCell = Point2D(floor(arrayObjects[i]->getPositionCenter().getX() / MAP_CELL_SIZE), floor(arrayObjects[i]->getPositionCenter().getY() / MAP_CELL_SIZE));
+            return (playerPosCell - exitPosCell).getLenghtVector() < MINIMAP_BOUNDED_REGION_CELL;
+        }
+    }
+    return false;
 }
 
 void UI::drawFPS(sf::RenderWindow& window, float currentFPS){

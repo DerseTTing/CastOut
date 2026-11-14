@@ -15,9 +15,9 @@ const float MAP_DOOR_PERCENT = 0.07f;
 
 // Генерация комнат
 const int ROOM_MIN_SIZE = 8;
-const int ROOM_SIZE_EMPTY = 9; // 0-12
-const int ROOM_SIZE_LITTLE = 14; // 12-16
-const int ROOM_SIZE_MIDLE = 18; // 16-20
+const int ROOM_SIZE_EMPTY = 8; 
+const int ROOM_SIZE_LITTLE = 14; 
+const int ROOM_SIZE_MIDLE = 18; 
 
 // Настройки стен
 const sf::Color WALL_COLOR = sf::Color(190, 190, 190);
@@ -32,7 +32,7 @@ const int PLAYER_HEALTH = 2;
 const int PLAYER_SPEED = 250; 
 const float PLAYER_SHIFT_SPEED_MULTIPLIER = 2.1f;
 const float PLAYER_MAX_STAMINA = 2.5f;
-const float PLAYER_MAX_STAMINA_PART_AFTER_HIT = 0.45f;
+const float PLAYER_MAX_STAMINA_PART_AFTER_HIT = 0.5f;
 const float PLAYER_REGENERATION_STAMINA = 0.3f;
 const float PLAYER_DEGENERATION_STAMINA = 0.9f;
 const float PLAYER_PART_STAMINA_TO_SHIFT = 0.45f;
@@ -97,7 +97,7 @@ const int RAY_FREQUENCY_IN_PIXEL = 1;
 
 // Настройки фона
 const float FOG_DENSITY = 0.003f;
-const float FOG_DENSITY_AFTER_HIT = FOG_DENSITY * 1.7f;
+const float FOG_DENSITY_AFTER_HIT = FOG_DENSITY * 1.6f;
 const float DANGER_DENSITY = 0.0007f; // Больше - меньше цвета
 const sf::Color BACKGROUND_COLOR_NEAR_FLOOR = sf::Color(51, 51, 51);
 const sf::Color BACKGROUND_COLOR_NEAR_FLOOR_AFTER_DEATH = sf::Color(46, 28, 28);
@@ -119,29 +119,26 @@ const sf::Color STAMINA_BAR_BACKGROUND_COLOR = sf::Color(38, 38, 38);
 const sf::Color STAMINA_BAR_COLOR = sf::Color(219, 219, 219);
 const sf::Color STAMINA_BAR_COLOR_DEFICIENCY = sf::Color(79, 58, 58);
 
+
+//Настройки подсказки выхода
+const float EXIT_HELPER_RECTANGLE_SIZE_SHARE_X = 0.012f;
+const float EXIT_HELPER_RECTANGLE_SIZE_SHARE_Y = 0.1f;
+const float EXIT_HELPER_RECTANGLE_POSITION_SHARE_X = 1.0f - EXIT_HELPER_RECTANGLE_SIZE_SHARE_X - 0.04f;
+const float EXIT_HELPER_RECTANGLE_POSITION_SHARE_Y = 1.0f - EXIT_HELPER_RECTANGLE_SIZE_SHARE_Y - 0.36f;
+
+const float EXIT_HELPER_RECTANGLE_CIRCLE_INDENT_SHARE = 0.01f;
+const sf::Color EXIT_HELPER_COLOR = sf::Color(0, 148, 12);
+
+const float EXIT_HELPER_CIRCLE_RADIUS_SHARE_X = EXIT_HELPER_RECTANGLE_SIZE_SHARE_X / 2.0f;
+const float EXIT_HELPER_CIRCLE_POSITION_SHARE_X = EXIT_HELPER_RECTANGLE_POSITION_SHARE_X;
+const float EXIT_HELPER_CIRCLE_POSITION_SHARE_Y = EXIT_HELPER_RECTANGLE_POSITION_SHARE_Y + EXIT_HELPER_RECTANGLE_SIZE_SHARE_Y + EXIT_HELPER_RECTANGLE_CIRCLE_INDENT_SHARE;
+
 // Вычисляемые параметры
 const float FOV_TANGENT = tan(PLAYER_VIEWING_ANGLE * DEG_TO_RAD / 2.0f);
 
 
 // Планы:
 // 
-// меню победы
-// Ранение (снижение стамины и обзора миникарты, темнее миникарта)
-// Здоровье
-// 
-// 
-// Сделано:
-// После альтаба ставиться пауза. После выхода из паузы не меняется поворот игрока
-// баг с текстурами сквозь стены пофикшен
-// Заметнее выход на карте
-// Уменьшил сенсу на 20 процентов
-// Ключи теперь больше растворяются в тумане
-// слегка темнее стены и пол
-// ранение. 
-// чит код
-// изменены цвета, + при ранинии
-// уменьшил карту
-// чит на бесконечное количество здоровье
 /*
 Вопросы:
 Скороcnm врага
@@ -153,8 +150,13 @@ const float FOV_TANGENT = tan(PLAYER_VIEWING_ANGLE * DEG_TO_RAD / 2.0f);
 
 
 
-
-
+чит на бесконечное количество здоровье
+карту чуть больше (55 -> 60)
+больше видимость после хита (1.7 -> 1.6)
+больше стамины после хита (0.45 -> 0.5)
+ворнинги
+фикс шкалы стамины во второй фазе
+больше маленьких комнат
 
 
 

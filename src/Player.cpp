@@ -18,7 +18,7 @@ void Player::updateMovement(const vector<Object2D*>& arrayObjects, float deltaTi
     Point2D targetPosition = positionCenter + velocity;
 
     if(!(moveVector.getX() == 0 && moveVector.getY() == 0)){
-        for(int i = 0; i < arrayObjects.size(); i++){
+        for(int i = 0; i < (int)arrayObjects.size(); i++){
             if(ObjectTypeRules::isPlayerCoolisionTypeObject(arrayObjects[i]->getObjectType())){
                 Point2D pushOut = arrayObjects[i]->distanceToObject(targetPosition, radius);
                 if (pushOut.getX() != 0 || pushOut.getY() != 0) {

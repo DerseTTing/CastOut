@@ -6,7 +6,7 @@ const unsigned int SCREEN_SIZE_Y = 1080;
 
 // Настройки генерации карты
 const int MAP_CELL_SIZE = 64;
-const int MAP_NUMBER_ROOM_DIVISIONS = 8;
+const int MAP_NUMBER_ROOM_DIVISIONS = 7;
 const float MAP_ROOM_DIVISIONS_SKIP_PERCENT = 0.45f;
 const int MAP_ROOM_DIVISIONS_SKIP_START = 4;
 const float MAP_ROOM_DIVISIONS_PROPORTION_MAX = 0.65f;
@@ -155,7 +155,6 @@ const float FOV_TANGENT = tan(PLAYER_VIEWING_ANGLE * DEG_TO_RAD / 2.0f);
 больше видимость после хита (1.7 -> 1.6)
 больше стамины после хита (0.45 -> 0.5)
 ворнинги
-фикс шкалы стамины во второй фазе
 больше маленьких комнат
 
 

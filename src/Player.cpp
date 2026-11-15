@@ -99,7 +99,7 @@ void Player::updateRotation(float mouseDelta, float deltaTime){
     else if(isRotationToEnemy){
         float directionGazeBefore = getDirectionGaze();
         setDirectionGaze(getDirectionGaze() + angleStepRotationToEnemy * deltaTime);
-        if((targetDirectionGazeToEnemy - directionGazeBefore) * (targetDirectionGazeToEnemy - getDirectionGaze()) < 0){
+        if((targetDirectionGazeToEnemy - directionGazeBefore) * (targetDirectionGazeToEnemy - getDirectionGaze()) <= 0){
 
             setDirectionGaze(targetDirectionGazeToEnemy);
 
@@ -113,10 +113,9 @@ void Player::updateRotation(float mouseDelta, float deltaTime){
 
         if(currentTimeScreamToEnemy <= 0){
             health -= 1;
-            if(health <= PLAYER_HEALTH)
-                stamina = staminaMax * PLAYER_MAX_STAMINA_PART_AFTER_HIT;
-            if(health > 0)
-                staminaMax = staminaMax * PLAYER_MAX_STAMINA_PART_AFTER_HIT;
+            if(health > 0 && health <= PLAYER_HEALTH)
+                staminaMax *= PLAYER_MAX_STAMINA_PART_AFTER_HIT;
+            stamina = staminaMax;
             
             isScreamToEnemy = false;
         }
